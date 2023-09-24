@@ -106,7 +106,7 @@ class RMPSchool:
                 new_professor_Xpath = f"//*[@id='root']/div/div/div[4]/div[1]/div[1]/div[3]/a[{professor_idx}]"
                 new_professor_text = self.driver.find_element(By.XPATH, new_professor_Xpath).text
                 professor_attr_list = new_professor_text.split('\n')
-                new_prof_obj = RMPProfessor(professor_attr_list)
+                new_prof_obj = self.get_dict(professor_attr_list)
                 self.professors_list.append(new_prof_obj)
                 print(new_prof_obj)
                 
@@ -125,43 +125,27 @@ class RMPSchool:
                     new_professor_Xpath = f"//*[@id='root']/div/div/div[4]/div[1]/div[1]/div[3]/a[{professor_idx}]"
                     new_professor_text = self.driver.find_element(By.XPATH, new_professor_Xpath).text
                     professor_attr_list = new_professor_text.split('\n')
-                    new_prof_obj = RMPProfessor(professor_attr_list)
+                    new_prof_obj = self.get_dict(professor_attr_list)
                     self.professors_list.append(new_prof_obj)
                     print(new_prof_obj)
                     continue
                 except Exception as e:
                     print(e)
                     break
-class RMPProfessor:
-    def __init__(self, professor_attr_list):
-        self.name = None
-        self.department = None
-        self.rating = None
-        self.num_ratings = None
-        self.would_take_again_pct = None
-        self.level_of_difficulty = None
-        self.get_attr_from_list(professor_attr_list)
-        
-    def get_attr_from_list(self, professor_attr_list):
-        self.name = professor_attr_list[3]
-        self.department = professor_attr_list[4]
-        self.rating = professor_attr_list[1]
-        self.num_ratings = professor_attr_list[2].split(' ')[0]
-        self.would_take_again_pct = professor_attr_list[6]
-        self.level_of_difficulty = professor_attr_list[8]
-        
-    def __str__(self):
-        return str(self.to_dict())
-        
-    def to_dict(self):
+
+    def get_dict(self, professor_attr_list):
         return {
-            'name': self.name,
-            'department': self.department,
-            'rating': self.rating,
-            'num_ratings': self.num_ratings,
-            'would_take_again_pct': self.would_take_again_pct,
-            'level_of_difficulty': self.level_of_difficulty
+            'name': professor_attr_list[3],
+            'department': professor_attr_list[4],
+            'rating': professor_attr_list[1],
+            'num_ratings': professor_attr_list[2].split(' ')[0],
+            'would_take_again_pct': professor_attr_list[6],
+            'level_of_difficulty': professor_attr_list[8]
         }
+
+    def __str__(self):
+        return str(self.get_dict())
+
 
 if __name__ == "__main__":
 
