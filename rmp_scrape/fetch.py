@@ -76,21 +76,19 @@ class RMPSchool:
     
     def get_school_name(self):
         """Fetches the school name from the professors search endpoint.
-        :returns school_name (str): The full school name corresponding to the SID.
+        :returns str: The full school name corresponding to the SID.
         """
         Xpath = '//*[@id="root"]/div/div/div[4]/div[1]/div[1]/div[1]/div/h1/span/b'  # RMP error message Xpath
         school_name_element = self.driver.find_element(by=By.XPATH, value=Xpath)  # Find the error message element'
-        school_name = school_name_element.text.strip()
-        return school_name
+        return school_name_element.text.strip()
 
     def get_num_professors(self, testing=False):
         """Fetches the number of professors from the professors search endpoint.
-        :returns num_professors (int): The number of professors listed on the professors search endpoint.
+        :returns int: The number of professors listed on the professors search endpoint.
         """
         Xpath = '//*[@id="root"]/div/div/div[4]/div[1]/div[1]/div[1]/div'  # RMP error message Xpath
         search_results_header_id = self.driver.find_element(By.XPATH, Xpath)  # Find the error message element
-        num_professors = search_results_header_id.text.split('professors')[0].strip()
-        return num_professors
+        return search_results_header_id.text.split('professors')[0].strip()
 
     def get_professors_list(self):
         """Fetches the list of professors from the professors search endpoint.
@@ -121,7 +119,8 @@ class RMPSchool:
             except Exception as e:
                 try:
                     self.driver.execute_script("arguments[0].click();", show_more_button)
-                    show_more_button = WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located((By.XPATH, Xpath)))
+                    show_more_button = WebDriverWait(self.driver, 20).until(
+                        EC.visibility_of_element_located((By.XPATH, Xpath)))
                     time.sleep(3)
                     new_professor_Xpath = f"//*[@id='root']/div/div/div[4]/div[1]/div[1]/div[3]/a[{professor_idx}]"
                     new_professor_text = self.driver.find_element(By.XPATH, new_professor_Xpath).text
