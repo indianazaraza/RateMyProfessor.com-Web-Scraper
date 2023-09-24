@@ -15,18 +15,19 @@ import logging
 import config
 
 # Selenium imports
-from selenium import webdriver # Webdriver
+from selenium import webdriver  # Webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By  # Find elements by
 
-from selenium import webdriver 
-from selenium.webdriver.chrome.service import Service 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait  # Wait for elements to load
 from selenium.webdriver.support import expected_conditions as EC  # Expected conditions
 from selenium.common.exceptions import TimeoutException, NoSuchElementException  # Misc. exceptions
 
 # Global
-const_rmp_search_url = 'https://www.ratemyprofessors.com/search/professors' # RMP professor search URL
+const_rmp_search_url = 'https://www.ratemyprofessors.com/search/professors'  # RMP professor search URL
+
 
 class RMPSchool:
     """
@@ -39,9 +40,10 @@ class RMPSchool:
         Constructor for RMPSchool class.
         :param school_id (int): The unique school ID that RateMyProfessor assigns to identify each University.
         """
-        self.school_id = school_id                                               # Parameter for the school ID
-        self.rmp_professors_endpoint = f"{const_rmp_search_url}/{school_id}?q=*" # Build request endpoint for the school ID
-        
+        self.school_id = school_id  # Parameter for the school ID
+        self.rmp_professors_endpoint = f"{const_rmp_search_url}/{school_id}?q=*"  # Build request endpoint for the
+        # school ID
+
         # Instantiate Chrome Options
         self.options = webdriver.ChromeOptions()
         self.options.add_argument('--headless')
@@ -53,18 +55,18 @@ class RMPSchool:
         self.options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         # Create web driver
-        self.driver = webdriver.Chrome(options=self.options) # Instantiate the webdriver object with the options
-        self.driver.get(self.rmp_professors_endpoint)        # Load the RMP professors search page
-        
+        self.driver = webdriver.Chrome(options=self.options)  # Instantiate the webdriver object with the options
+        self.driver.get(self.rmp_professors_endpoint)  # Load the RMP professors search page
+
         # Set attributes for the School
         self.school_name = self.get_school_name()
         self.num_professors = self.get_num_professors()
         self.professors_list = []
         self.get_professors_list()
-        
+
         school_name_fp = self.school_name.replace(' ', '').replace('-', '_').lower()
         self.dump_professors_list_to_csv(os.path.join('static_data', f'{school_name_fp}_professors.csv'))
-    
+
     def dump_professors_list_to_csv(self, file_path):
         """Dumps the professors list to a CSV file.
         :param file_path (str): The file path to store the CSV file.
@@ -72,8 +74,9 @@ class RMPSchool:
         with open(file_path, 'x') as f:
             f.write('name,department,rating,num_ratings,would_take_again_pct,level_of_difficulty\n')
             for professor in self.professors_list:
-                f.write(f"{professor.name},{professor.department},{professor.rating},{professor.num_ratings},{professor.would_take_again_pct},{professor.level_of_difficulty}\n")
-    
+                f.write(
+                    f"{professor.name},{professor.department},{professor.rating},{professor.num_ratings},{professor.would_take_again_pct},{professor.level_of_difficulty}\n")
+
     def get_school_name(self):
         """Fetches the school name from the professors search endpoint.
         :returns str: The full school name corresponding to the SID.
@@ -109,10 +112,11 @@ class RMPSchool:
                 new_prof_obj = self.get_dict(professor_attr_list)
                 self.professors_list.append(new_prof_obj)
                 print(new_prof_obj)
-                
+
                 if professor_idx % 8 == 0:
                     self.driver.execute_script("arguments[0].click();", show_more_button)
-                    show_more_button = WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located((By.XPATH, Xpath)))
+                    show_more_button = WebDriverWait(self.driver, 20).until(
+                        EC.visibility_of_element_located((By.XPATH, Xpath)))
                     time.sleep(3)
                     break
 
